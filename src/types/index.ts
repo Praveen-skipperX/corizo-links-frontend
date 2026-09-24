@@ -8,6 +8,7 @@ export const LINK_TYPES = [
   'Microsoft Forms',
   'Microsoft Excel',
   'Microsoft Word',
+  'Figma',
   'Other',
 ] as const;
 

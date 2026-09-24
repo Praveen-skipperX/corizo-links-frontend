@@ -1,9 +1,10 @@
 import {
-    Clipboard,
-    ClipboardList,
-    FileSpreadsheet,
-    FileText,
-    Link2,
+  Clipboard,
+  ClipboardList,
+  Figma,
+  FileSpreadsheet,
+  FileText,
+  Link2,
 } from "lucide-react";
 import type { LinkType } from "../types";
 
@@ -24,6 +25,8 @@ export const getLinkIcon = (
       return <FileSpreadsheet size={size} />;
     case "Microsoft Word":
       return <FileText size={size} />;
+    case "Figma":
+      return <Figma size={size} />;
     default:
       return <Link2 size={size} />;
   }
@@ -43,6 +46,8 @@ export const getLinkTypeColor = (type: LinkType | undefined): string => {
       return "text-emerald-700";
     case "Microsoft Word":
       return "text-blue-800";
+    case "Figma":
+      return "text-rose-600";
     default:
       return "text-gray-500";
   }
@@ -62,6 +67,8 @@ export const getLinkTypeBg = (type: LinkType | undefined): string => {
       return "bg-emerald-50";
     case "Microsoft Word":
       return "bg-blue-50";
+    case "Figma":
+      return "bg-rose-50";
     default:
       return "bg-gray-100";
   }
