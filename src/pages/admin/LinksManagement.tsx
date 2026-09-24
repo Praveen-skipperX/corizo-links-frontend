@@ -149,12 +149,16 @@ const LinksManagement = () => {
   );
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 animate-slide-up">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-accent">Links Management</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary mb-1.5">
+            Administration
+          </p>
+          <h1 className="text-2xl font-extrabold text-accent tracking-tight">
+            Links Management
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
             {links.length} link{links.length !== 1 ? 's' : ''} total
           </p>
         </div>
@@ -167,7 +171,6 @@ const LinksManagement = () => {
         </button>
       </div>
 
-      {/* Search */}
       <div className="card !p-4">
         <div className="relative max-w-sm">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />

@@ -1,13 +1,14 @@
 import {
-    AlertCircle,
-    ExternalLink,
-    Info,
-    Link2,
-    Loader2,
-    Search,
-    TrendingUp,
+  AlertCircle,
+  ExternalLink,
+  FolderOpen,
+  Info,
+  Link2,
+  Loader2,
+  Search,
+  X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/api";
 import { getLinkIcon, getLinkTypeBg, getLinkTypeColor } from "../lib/linkIcons";
@@ -15,20 +16,23 @@ import { truncate } from "../lib/utils";
 import { Link } from "../types";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  General: "bg-gray-100 text-gray-700",
-  Internship: "bg-blue-100 text-blue-700",
-  Leads: "bg-green-100 text-green-700",
-  Workshop: "bg-orange-100 text-orange-700",
-  Event: "bg-pink-100 text-pink-700",
+  General: "bg-slate-100 text-slate-700",
+  Internship: "bg-sky-100 text-sky-700",
+  Leads: "bg-emerald-100 text-emerald-700",
+  Workshop: "bg-amber-100 text-amber-700",
+  Event: "bg-rose-100 text-rose-700",
+  Templates: "bg-violet-100 text-violet-700",
+  HR: "bg-teal-100 text-teal-700",
 };
 
 const getCategoryClass = (cat: string) =>
-  CATEGORY_COLORS[cat] || "bg-purple-100 text-purple-700";
+  CATEGORY_COLORS[cat] || "bg-primary/10 text-primary-dark";
 
 const Dashboard = () => {
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
   useEffect(() => {
@@ -45,121 +49,163 @@ const Dashboard = () => {
     fetchLinks();
   }, []);
 
-  const filtered = links.filter(
-    (l) =>
-      l.title.toLowerCase().includes(search.toLowerCase()) ||
-      l.description.toLowerCase().includes(search.toLowerCase()) ||
-      l.category.toLowerCase().includes(search.toLowerCase()) ||
-      (l.type || "").toLowerCase().includes(search.toLowerCase()),
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(links.map((l) => l.category)))],
+    [links],
   );
 
-  const categories = [...new Set(links.map((l) => l.category))];
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    return links.filter((l) => {
+      const matchesCategory =
+        activeCategory === "All" || l.category === activeCategory;
+      const matchesSearch =
+        !q ||
+        l.title.toLowerCase().includes(q) ||
+        l.description.toLowerCase().includes(q) ||
+        l.category.toLowerCase().includes(q) ||
+        (l.type || "").toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+  }, [links, search, activeCategory]);
 
   return (
-    <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 animate-slide-up">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-accent">Resource Links</h1>
-          <p className="text-gray-500 text-sm mt-0.5">
-            {links.length} link{links.length !== 1 ? "s" : ""} available
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary mb-1.5">
+            Resources
+          </p>
+          <h1 className="text-2xl font-extrabold text-accent tracking-tight">
+            Shared Links
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {links.length} active resource
+            {links.length !== 1 ? "s" : ""} available for your team
           </p>
         </div>
-        {/* Search */}
-        <div className="relative w-full sm:w-72">
+
+        <div className="relative w-full sm:w-80">
           <Search
             size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
           />
           <input
             type="text"
-            placeholder="Search by title, type, category…"
+            placeholder="Search title, type, category…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="input-field pl-9"
+            className="input-field pl-10 pr-10"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Info banner */}
+      {/* Notice */}
       {!bannerDismissed && (
-        <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4 animate-slide-in">
-          <Info size={18} className="text-blue-500 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 rounded-2xl border border-sky-200/80 bg-gradient-to-r from-sky-50 to-primary/5 p-4 animate-slide-in">
+          <div className="w-8 h-8 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0">
+            <Info size={15} className="text-sky-600" />
+          </div>
           <div className="flex-1 min-w-0">
-            <p className="text-blue-800 text-sm font-semibold mb-0.5">
-              Important Notice
+            <p className="text-accent text-sm font-semibold mb-0.5">
+              Access notice
             </p>
-            <p className="text-blue-700 text-xs leading-relaxed">
-              Direct access to these resources is not provided through this
-              portal for security reasons. You must be logged into the
-              appropriate account that has been granted access. This portal only
-              provides organized links.
+            <p className="text-gray-600 text-xs leading-relaxed">
+              This portal organizes links only. Sign in to the account that has
+              been granted access before opening a resource.
             </p>
           </div>
           <button
             onClick={() => setBannerDismissed(true)}
-            className="text-blue-400 hover:text-blue-600 text-xs font-medium flex-shrink-0 transition-colors"
+            className="text-gray-400 hover:text-gray-600 text-xs font-semibold flex-shrink-0 transition-colors px-2 py-1 rounded-lg hover:bg-white/60"
           >
             Dismiss
           </button>
         </div>
       )}
 
-      {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        <div className="card flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <Link2 size={18} className="text-primary" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-accent">{links.length}</p>
-            <p className="text-xs text-gray-500">Total Links</p>
-          </div>
-        </div>
-        <div className="card flex items-center gap-3">
-          <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <TrendingUp size={18} className="text-green-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-accent">
-              {categories.length}
-            </p>
-            <p className="text-xs text-gray-500">Categories</p>
-          </div>
-        </div>
-        <div className="card flex items-center gap-3 col-span-2 sm:col-span-1">
-          <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <Search size={18} className="text-blue-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-accent">{filtered.length}</p>
-            <p className="text-xs text-gray-500">Shown</p>
-          </div>
-        </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <StatCard
+          icon={<Link2 size={18} className="text-primary" />}
+          iconBg="bg-primary/10"
+          value={links.length}
+          label="Total links"
+        />
+        <StatCard
+          icon={<FolderOpen size={18} className="text-emerald-600" />}
+          iconBg="bg-emerald-50"
+          value={Math.max(0, categories.length - 1)}
+          label="Categories"
+        />
+        <StatCard
+          icon={<Search size={18} className="text-sky-600" />}
+          iconBg="bg-sky-50"
+          value={filtered.length}
+          label="Showing"
+          className="col-span-2 lg:col-span-1"
+        />
       </div>
 
-      {/* Links grid */}
+      {/* Category filters */}
+      {categories.length > 1 && (
+        <div className="flex flex-wrap gap-2">
+          {categories.map((cat) => {
+            const active = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={[
+                  "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200",
+                  active
+                    ? "bg-accent text-white shadow-soft"
+                    : "bg-white text-gray-500 border border-gray-100 hover:border-primary/30 hover:text-primary",
+                ].join(" ")}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Grid */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
-          <Loader2 size={32} className="animate-spin text-primary" />
-          <p className="text-sm">Loading links...</p>
+        <div className="flex flex-col items-center justify-center py-24 text-gray-400 gap-3">
+          <Loader2 size={28} className="animate-spin text-primary" />
+          <p className="text-sm font-medium">Loading links…</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
-          <AlertCircle size={40} className="text-gray-300" />
+        <div className="card flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
+          <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center">
+            <AlertCircle size={28} className="text-gray-300" />
+          </div>
           <div className="text-center">
-            <p className="font-medium text-gray-500">No links found</p>
-            <p className="text-sm mt-1">
-              {search
-                ? "Try a different search term."
+            <p className="font-semibold text-gray-600">No links found</p>
+            <p className="text-sm mt-1 text-gray-400">
+              {search || activeCategory !== "All"
+                ? "Try a different search or category."
                 : "No active links have been added yet."}
             </p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filtered.map((link) => (
-            <LinkCard key={link._id} link={link} />
+          {filtered.map((link, i) => (
+            <LinkCard key={link._id} link={link} index={i} />
           ))}
         </div>
       )}
@@ -167,7 +213,39 @@ const Dashboard = () => {
   );
 };
 
-const LinkCard = ({ link }: { link: Link }) => {
+const StatCard = ({
+  icon,
+  iconBg,
+  value,
+  label,
+  className = "",
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  value: number;
+  label: string;
+  className?: string;
+}) => (
+  <div
+    className={`card flex items-center gap-3.5 !p-4 hover:shadow-card-hover transition-shadow duration-300 ${className}`}
+  >
+    <div
+      className={`w-11 h-11 ${iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}
+    >
+      {icon}
+    </div>
+    <div>
+      <p className="text-2xl font-extrabold text-accent tracking-tight leading-none">
+        {value}
+      </p>
+      <p className="text-[11px] font-medium text-gray-400 mt-1 uppercase tracking-wide">
+        {label}
+      </p>
+    </div>
+  </div>
+);
+
+const LinkCard = ({ link, index }: { link: Link; index: number }) => {
   const trackClick = () => {
     api
       .post("/activities/log-click", {
@@ -176,63 +254,71 @@ const LinkCard = ({ link }: { link: Link }) => {
         linkId: link._id,
       })
       .catch(() => {
-        /* non-blocking, ignore errors */
+        /* non-blocking */
       });
   };
 
   return (
-    <div className="card hover:shadow-card-hover transition-shadow duration-200 flex flex-col group">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div
-          className={[
-            "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors",
-            getLinkTypeBg(link.type),
-          ].join(" ")}
-        >
-          <span className={getLinkTypeColor(link.type)}>
-            {getLinkIcon(link.type, 18)}
+    <article
+      className="card group flex flex-col !p-0 overflow-hidden hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300"
+      style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+    >
+      <div className="p-5 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-3 mb-3.5">
+          <div
+            className={[
+              "w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105",
+              getLinkTypeBg(link.type),
+            ].join(" ")}
+          >
+            <span className={getLinkTypeColor(link.type)}>
+              {getLinkIcon(link.type, 18)}
+            </span>
+          </div>
+          <span
+            className={`text-[10px] font-bold px-2.5 py-1 rounded-lg tracking-wide ${getCategoryClass(
+              link.category,
+            )}`}
+          >
+            {link.category}
           </span>
         </div>
-        <span
-          className={`text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${getCategoryClass(
-            link.category,
-          )}`}
-        >
-          {link.category}
-        </span>
+
+        <h3 className="font-bold text-accent text-[14px] leading-snug mb-1 group-hover:text-primary transition-colors">
+          {link.title}
+        </h3>
+
+        {link.type && (
+          <p
+            className={`text-[11px] font-semibold mb-2 ${getLinkTypeColor(
+              link.type,
+            )}`}
+          >
+            {link.type}
+          </p>
+        )}
+
+        {link.description && (
+          <p className="text-gray-500 text-xs leading-relaxed flex-1">
+            {truncate(link.description, 110)}
+          </p>
+        )}
       </div>
 
-      <h3 className="font-semibold text-accent text-sm leading-snug mb-1">
-        {link.title}
-      </h3>
-
-      {link.type && (
-        <p
-          className={`text-xs font-medium mb-1.5 ${getLinkTypeColor(link.type)}`}
-        >
-          {link.type}
-        </p>
-      )}
-
-      {link.description && (
-        <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-1">
-          {truncate(link.description, 100)}
-        </p>
-      )}
-
-      <div className="mt-auto pt-3 border-t border-gray-50">
+      <div className="px-5 pb-5 pt-0 mt-auto">
+        <div className="h-px bg-gray-50 mb-4" />
         <a
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
           onClick={trackClick}
-          className="btn-primary w-full flex items-center justify-center gap-2 text-sm py-2"
+          className="btn-primary w-full flex items-center justify-center gap-2 text-[13px] py-2.5"
         >
           <ExternalLink size={14} />
-          Open Link
+          Open link
         </a>
       </div>
-    </div>
+    </article>
   );
 };
 

@@ -178,12 +178,16 @@ const ActivityLog = () => {
   const hasFilters = search || actionFilter !== "all" || dateFrom || dateTo;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 animate-slide-up">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-accent">Activity Log</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary mb-1.5">
+            Analytics
+          </p>
+          <h1 className="text-2xl font-extrabold text-accent tracking-tight">
+            Activity Log
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
             {pagination ? `${pagination.total} total events` : "Loading…"}
             {refreshing && (
               <span className="ml-2 inline-flex items-center gap-1 text-primary text-xs">

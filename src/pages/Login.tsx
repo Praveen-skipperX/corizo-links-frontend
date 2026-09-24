@@ -70,85 +70,74 @@ const LoginPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-accent flex items-center justify-center">
+      <div className="min-h-screen bg-brand-sidebar flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen overflow-y-auto relative flex items-center justify-center py-8 px-4">
-      {/* Deep gradient background */}
+    <div className="min-h-screen overflow-y-auto relative flex items-center justify-center py-6 px-4">
       <div
         className="fixed inset-0 -z-10"
         style={{
           background:
-            "linear-gradient(135deg, #1E153D 0%, #3b1f6b 45%, #6E24A5 100%)",
+            "linear-gradient(145deg, #16102E 0%, #1E153D 40%, #3b1f6b 72%, #6E24A5 100%)",
         }}
       />
-      {/* Decorative orbs */}
-      <div className="fixed top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full opacity-20 blur-[80px] bg-primary pointer-events-none -z-10" />
-      <div className="fixed bottom-[-80px] left-[-60px] w-[320px] h-[320px] rounded-full opacity-15 blur-[70px] bg-purple-400 pointer-events-none -z-10" />
+      <div className="fixed top-[-120px] right-[-80px] w-[420px] h-[420px] rounded-full opacity-[0.18] blur-[90px] bg-primary pointer-events-none -z-10" />
+      <div className="fixed bottom-[-100px] left-[-60px] w-[340px] h-[340px] rounded-full opacity-[0.12] blur-[80px] bg-white pointer-events-none -z-10" />
 
-      {/* Login card */}
-      <div className="w-full max-w-[420px] animate-slide-in">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Brand header */}
-          <div className="px-7 pt-7 pb-5 text-center border-b border-gray-100">
+      <div className="w-full max-w-[400px] animate-slide-up">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+          <div className="px-6 pt-5 pb-4 flex items-center gap-3 border-b border-gray-100/80">
             <img
               src="https://corizo.in/wp-content/themes/techglobiz/images/hdr-logo.jpg"
-              alt="Corizo Links"
-              className="mx-auto h-10 w-auto"
+              alt="Corizo"
+              className="h-8 w-auto max-w-[120px] object-contain flex-shrink-0"
             />
-            <h1 className="text-lg font-bold text-accent tracking-tight">
-              Links Portal
-            </h1>
-            {/* <p className="text-xs text-gray-400 mt-1 font-medium tracking-wide">
-              links.corizo.in &nbsp;&middot;&nbsp; Internal Use Only
-            </p> */}
+            <div className="min-w-0">
+              <h1 className="text-base font-extrabold text-accent tracking-tight leading-tight">
+                Corizo Links
+              </h1>
+              <p className="text-[10px] text-gray-400 mt-0.5 font-semibold tracking-[0.12em] uppercase">
+                Internal Portal
+              </p>
+            </div>
           </div>
 
-          <div className="px-7 py-5">
+          <div className="px-6 py-5">
             <div className="mb-4">
-              <h2 className="text-base font-bold text-accent">
-                Sign In to Your Account
+              <h2 className="text-[14px] font-bold text-accent tracking-tight">
+                Sign in to your account
               </h2>
-              {/* <p className="text-gray-500 text-xs mt-0.5">
-                Enter your credentials to access the portal.
-              </p> */}
             </div>
 
-            {/* Security warning */}
-            <div className="flex gap-3 bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
+            <div className="flex gap-2.5 bg-red-50/80 border border-red-100 rounded-xl p-2.5 mb-4">
               <ShieldAlert
-                size={16}
-                className="text-red-500 flex-shrink-0 mt-px"
+                size={14}
+                className="text-red-500 flex-shrink-0 mt-0.5"
               />
-              <p className="text-red-700 text-[11px] leading-relaxed font-medium">
-                This portal is strictly for{" "}
-                <strong>Corizo employees only</strong>.
+              <p className="text-red-700/90 text-[11px] leading-snug font-medium">
+                For <strong>Corizo employees only</strong>.
                 {userIp ? (
                   <>
                     {" "}
-                    Your IP address (<strong>{userIp}</strong>) and all
-                    activities are being
+                    IP <strong>{userIp}</strong> and activity are logged.
                   </>
                 ) : (
-                  <> All activities are being</>
-                )}{" "}
-                monitored and logged. Unauthorized access is prohibited and will
-                be reported.
+                  <> Activity is monitored and logged.</>
+                )}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
-              {/* Email */}
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  className="block text-[13px] font-semibold text-gray-700 mb-1"
                 >
-                  Email Address
+                  Email address
                 </label>
                 <div className="relative">
                   <Mail
@@ -174,21 +163,14 @@ const LoginPage = () => {
                 {errors.email && <FieldError>{errors.email}</FieldError>}
               </div>
 
-              {/* Password */}
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-1">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-semibold text-gray-700"
+                    className="block text-[13px] font-semibold text-gray-700"
                   >
                     Password
                   </label>
-                  <button
-                    type="button"
-                    className="text-xs text-primary hover:text-primary-dark font-semibold transition-colors"
-                  >
-                    Forgot Password?
-                  </button>
                 </div>
                 <div className="relative">
                   <Lock
@@ -223,7 +205,6 @@ const LoginPage = () => {
                 {errors.password && <FieldError>{errors.password}</FieldError>}
               </div>
 
-              {/* Remember me */}
               <label className="flex items-center gap-2.5 cursor-pointer select-none group">
                 <input
                   type="checkbox"
@@ -231,16 +212,15 @@ const LoginPage = () => {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-gray-300 accent-primary cursor-pointer"
                 />
-                <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">
+                <span className="text-[13px] text-gray-500 group-hover:text-gray-700 transition-colors">
                   Remember me for 7 days
                 </span>
               </label>
 
-              {/* Submit button */}
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-primary w-full flex items-center justify-center gap-2.5 py-2.5 text-sm mt-1"
+                className="btn-primary w-full flex items-center justify-center gap-2 py-2.5 text-sm"
               >
                 {submitting ? (
                   <>
@@ -250,18 +230,16 @@ const LoginPage = () => {
                 ) : (
                   <>
                     <Lock size={14} />
-                    Sign In Securely
+                    Sign in securely
                   </>
                 )}
               </button>
             </form>
           </div>
 
-          {/* Footer */}
-          <div className="px-7 py-3 bg-gray-50 border-t border-gray-100 text-center">
-            <p className="text-[11px] text-gray-400">
-              &copy; {new Date().getFullYear()} Corizo &nbsp;&middot;&nbsp; All
-              rights reserved &nbsp;&middot;&nbsp; For internal use only
+          <div className="px-6 py-2.5 bg-brand-light-bg/60 border-t border-gray-100 text-center">
+            <p className="text-[10px] text-gray-400 font-medium">
+              &copy; {new Date().getFullYear()} Corizo · Internal use only
             </p>
           </div>
         </div>

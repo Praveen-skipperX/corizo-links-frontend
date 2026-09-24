@@ -1,57 +1,74 @@
-import { Menu } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { useLocation } from 'react-router-dom';
-import { getInitials } from '../../lib/utils';
+import { Menu } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "react-router-dom";
+import { getInitials } from "../../lib/utils";
 
 interface NavbarProps {
   onMenuClick: () => void;
 }
 
 const pageTitles: Record<string, { title: string; sub: string }> = {
-  '/dashboard': { title: 'Dashboard', sub: 'Overview of all shared links' },
-  '/admin/links': { title: 'Links Management', sub: 'Create, edit and manage links' },
-  '/admin/users': { title: 'User Management', sub: 'Manage portal users and roles' },
-  '/admin/activity': { title: 'Activity Log', sub: 'Full audit trail of portal activity' },
+  "/dashboard": {
+    title: "Dashboard",
+    sub: "Browse and open shared resource links",
+  },
+  "/admin/links": {
+    title: "Links Management",
+    sub: "Create, edit and manage portal links",
+  },
+  "/admin/users": {
+    title: "User Management",
+    sub: "Manage portal users and roles",
+  },
+  "/admin/activity": {
+    title: "Activity Log",
+    sub: "Full audit trail of portal activity",
+  },
 };
 
 const Navbar = ({ onMenuClick }: NavbarProps) => {
   const { user } = useAuth();
   const location = useLocation();
-  const page = pageTitles[location.pathname] ?? { title: 'Dashboard', sub: 'Corizo Links Portal' };
+  const page = pageTitles[location.pathname] ?? {
+    title: "Dashboard",
+    sub: "Corizo Links Portal",
+  };
 
   return (
-    <header className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 shadow-sm">
-      {/* Left */}
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100/80 px-4 sm:px-6 lg:px-8 h-[64px] flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3.5 min-w-0">
         <button
           onClick={onMenuClick}
-          className="lg:hidden text-gray-500 hover:text-primary p-2 rounded-lg hover:bg-primary/10 transition-colors"
+          className="lg:hidden text-gray-500 hover:text-primary p-2 rounded-xl hover:bg-primary/8 transition-colors"
           aria-label="Open navigation menu"
         >
           <Menu size={20} />
         </button>
-        <div>
-          <h2 className="text-base font-bold text-accent leading-tight">{page.title}</h2>
-          <p className="text-xs text-gray-400 hidden sm:block">{page.sub}</p>
+        <div className="min-w-0">
+          <h2 className="text-[15px] font-bold text-accent leading-tight tracking-tight truncate">
+            {page.title}
+          </h2>
+          <p className="text-[11px] text-gray-400 hidden sm:block mt-0.5 truncate">
+            {page.sub}
+          </p>
         </div>
       </div>
 
-      {/* Right – user info */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-3 flex-shrink-0">
         <div className="text-right hidden sm:block">
-          <p className="text-sm font-semibold text-accent leading-tight">{user?.name}</p>
+          <p className="text-[13px] font-semibold text-accent leading-tight">
+            {user?.name}
+          </p>
           <span
             className={
-              user?.role === 'admin'
-                ? 'badge-admin text-[10px] py-0'
-                : 'badge-author text-[10px] py-0'
+              user?.role === "admin" ? "badge-admin" : "badge-author"
             }
           >
-            {user?.role === 'admin' ? 'Admin' : 'Author'}
+            {user?.role === "admin" ? "Admin" : "Author"}
           </span>
         </div>
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/60 to-primary flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm">
-          {getInitials(user?.name || 'U')}
+        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-soft ring-2 ring-primary/10">
+          {getInitials(user?.name || "U")}
         </div>
       </div>
     </header>
