@@ -5,6 +5,7 @@ import AdminRoute from './components/layout/AdminRoute';
 import Layout from './components/layout/Layout';
 import LoginPage from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Security from './pages/Security';
 import LinksManagement from './pages/admin/LinksManagement';
 import UserManagement from './pages/admin/UserManagement';
 import ActivityLog from './pages/admin/ActivityLog';
@@ -25,6 +26,7 @@ function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="security" element={<Security />} />
             <Route
               path="admin/links"
               element={

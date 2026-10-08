@@ -1,7 +1,6 @@
 import {
   Clipboard,
   ClipboardList,
-  Figma,
   FileSpreadsheet,
   FileText,
   Link2,
@@ -26,7 +25,7 @@ export const getLinkIcon = (
     case "Microsoft Word":
       return <FileText size={size} />;
     case "Figma":
-      return <Figma size={size} />;
+      return <svg width={size} height={size} viewBox="0 0 30 45" role="img" aria-label="Figma"><path fill="#f24e1e" d="M7.5 0h7.5v15H7.5a7.5 7.5 0 010-15"/><path fill="#ff7262" d="M15 0h7.5a7.5 7.5 0 010 15H15z"/><path fill="#a259ff" d="M7.5 15H15v15H7.5a7.5 7.5 0 010-15"/><circle fill="#1abcfe" cx="22.5" cy="22.5" r="7.5"/><path fill="#0acf83" d="M7.5 30H15v7.5A7.5 7.5 0 117.5 30"/></svg>;
     default:
       return <Link2 size={size} />;
   }
@@ -73,3 +72,13 @@ export const getLinkTypeBg = (type: LinkType | undefined): string => {
       return "bg-gray-100";
   }
 };
+
+export function resolveLinkType(link: { url: string; type?: LinkType }): LinkType {
+  try { const host = new URL(link.url).hostname.toLowerCase(); if (host === 'figma.com' || host.endsWith('.figma.com')) return 'Figma'; } catch { /* preserve existing type */ }
+  return link.type || 'Other';
+}
+
+export function safeLinkUrl(value: string): string | undefined {
+  try { const url = new URL(value); if (['http:', 'https:'].includes(url.protocol) && !url.username && !url.password) return url.href; } catch { /* invalid stored URL */ }
+  return undefined;
+}

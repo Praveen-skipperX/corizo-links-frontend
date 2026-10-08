@@ -11,7 +11,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/api";
-import { getLinkIcon, getLinkTypeBg, getLinkTypeColor } from "../lib/linkIcons";
+import { getLinkIcon, getLinkTypeBg, getLinkTypeColor, resolveLinkType, safeLinkUrl } from "../lib/linkIcons";
 import { truncate } from "../lib/utils";
 import { Link } from "../types";
 
@@ -39,7 +39,7 @@ const Dashboard = () => {
     const fetchLinks = async () => {
       try {
         const { data } = await api.get("/links/active");
-        if (data.success) setLinks(data.data.links as Link[]);
+        if (data.success) setLinks((data.data.links as Link[]).map(link => ({ ...link, type: resolveLinkType(link) })));
       } catch {
         toast.error("Failed to load links. Please refresh.");
       } finally {
@@ -50,7 +50,7 @@ const Dashboard = () => {
   }, []);
 
   const categories = useMemo(
-    () => ["All", ...Array.from(new Set(links.map((l) => l.category)))],
+    () => ["All", ...Array.from(new Set([...links.map((l) => l.category), "Figma"])).sort()],
     [links],
   );
 
@@ -58,7 +58,7 @@ const Dashboard = () => {
     const q = search.toLowerCase().trim();
     return links.filter((l) => {
       const matchesCategory =
-        activeCategory === "All" || l.category === activeCategory;
+        activeCategory === "All" || l.category === activeCategory || (activeCategory === "Figma" && l.type === "Figma");
       const matchesSearch =
         !q ||
         l.title.toLowerCase().includes(q) ||
@@ -308,7 +308,7 @@ const LinkCard = ({ link, index }: { link: Link; index: number }) => {
       <div className="px-5 pb-5 pt-0 mt-auto">
         <div className="h-px bg-gray-50 mb-4" />
         <a
-          href={link.url}
+          href={safeLinkUrl(link.url)}
           target="_blank"
           rel="noopener noreferrer"
           onClick={trackClick}

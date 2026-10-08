@@ -19,6 +19,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  mfaEnabled?: boolean;
   lastLogin?: string;
   createdAt: string;
   updatedAt: string;
@@ -53,6 +54,7 @@ export interface LoginPayload {
   email: string;
   password: string;
   rememberMe?: boolean;
+  code?: string;
 }
 
 export type ActivityAction =

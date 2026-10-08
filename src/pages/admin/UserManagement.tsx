@@ -99,8 +99,8 @@ const UserManagement = () => {
       toast.error("Name and email are required.");
       return;
     }
-    if (!editUser && form.password.length < 8) {
-      toast.error("Password must be at least 8 characters.");
+    if (!editUser && form.password.length < 12) {
+      toast.error("Password must be at least 12 characters.");
       return;
     }
     setSubmitting(true);
@@ -155,8 +155,8 @@ const UserManagement = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (resetForm.newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters.");
+    if (resetForm.newPassword.length < 12) {
+      toast.error("Password must be at least 12 characters.");
       return;
     }
     setResetting(true);
@@ -381,8 +381,8 @@ const UserManagement = () => {
                       setForm({ ...form, password: e.target.value })
                     }
                     className="input-field pr-11"
-                    placeholder="Min. 8 characters"
-                    minLength={8}
+                    placeholder="Min. 12 characters"
+                    minLength={12}
                     required
                   />
                   <button
@@ -507,8 +507,8 @@ const UserManagement = () => {
                     setResetForm({ newPassword: e.target.value })
                   }
                   className="input-field pr-11"
-                  placeholder="Min. 8 characters"
-                  minLength={8}
+                  placeholder="Min. 12 characters"
+                  minLength={12}
                   required
                 />
                 <button

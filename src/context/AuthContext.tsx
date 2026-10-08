@@ -10,7 +10,7 @@ import api from "../lib/api";
 import { AuthState, LoginPayload } from "../types";
 
 interface AuthContextType extends AuthState {
-  login: (payload: LoginPayload) => Promise<boolean>;
+  login: (payload: LoginPayload) => Promise<boolean | "mfa">;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -47,12 +47,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshUser();
   }, [refreshUser]);
 
-  const login = async (payload: LoginPayload): Promise<boolean> => {
+  const login = async (payload: LoginPayload): Promise<boolean | "mfa"> => {
     try {
       const { data } = await api.post("/auth/login", {
         email: payload.email,
         password: payload.password,
+        rememberMe: payload.rememberMe,
+        code: payload.code,
       });
+      if (data.requiresMfa) return "mfa";
       if (data.success) {
         setState({
           user: data.data.user,

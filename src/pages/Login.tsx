@@ -1,258 +1,45 @@
-import {
-  AlertTriangle,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  ShieldAlert,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import api from "../lib/api";
-
-const LoginPage = () => {
-  const navigate = useNavigate();
-  const { login, isAuthenticated, isLoading } = useAuth();
-
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [rememberMe, setRememberMe] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<
-    Partial<{ email: string; password: string }>
-  >({});
-  const [userIp, setUserIp] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isAuthenticated && !isLoading)
-      navigate("/dashboard", { replace: true });
-  }, [isAuthenticated, isLoading, navigate]);
-
-  useEffect(() => {
-    api
-      .get("/activities/my-ip")
-      .then(({ data }) => {
-        if (data.success) setUserIp(data.data.ip);
-      })
-      .catch(() => {});
-  }, []);
-
-  const validate = (): boolean => {
-    const errs: typeof errors = {};
-    if (!form.email.trim()) errs.email = "Email is required.";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email))
-      errs.email = "Enter a valid email address.";
-    if (!form.password) errs.password = "Password is required.";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  const handleChange =
-    (field: "email" | "password") =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((f) => ({ ...f, [field]: e.target.value }));
-      if (errors[field]) setErrors((er) => ({ ...er, [field]: undefined }));
-    };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    setSubmitting(true);
-    const ok = await login({
-      email: form.email.trim(),
-      password: form.password,
-      rememberMe,
-    });
-    setSubmitting(false);
-    if (ok) navigate("/dashboard", { replace: true });
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-brand-sidebar flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen overflow-y-auto relative flex items-center justify-center py-6 px-4">
-      <div
-        className="fixed inset-0 -z-10"
-        style={{
-          background:
-            "linear-gradient(145deg, #16102E 0%, #1E153D 40%, #3b1f6b 72%, #6E24A5 100%)",
-        }}
-      />
-      <div className="fixed top-[-120px] right-[-80px] w-[420px] h-[420px] rounded-full opacity-[0.18] blur-[90px] bg-primary pointer-events-none -z-10" />
-      <div className="fixed bottom-[-100px] left-[-60px] w-[340px] h-[340px] rounded-full opacity-[0.12] blur-[80px] bg-white pointer-events-none -z-10" />
-
-      <div className="w-full max-w-[400px] animate-slide-up">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-white/10">
-          <div className="px-6 pt-5 pb-4 flex items-center gap-3 border-b border-gray-100/80">
-            <img
-              src="https://corizo.in/wp-content/themes/techglobiz/images/hdr-logo.jpg"
-              alt="Corizo"
-              className="h-8 w-auto max-w-[120px] object-contain flex-shrink-0"
-            />
-            <div className="min-w-0">
-              <h1 className="text-base font-extrabold text-accent tracking-tight leading-tight">
-                Corizo Links
-              </h1>
-              <p className="text-[10px] text-gray-400 mt-0.5 font-semibold tracking-[0.12em] uppercase">
-                Internal Portal
-              </p>
-            </div>
-          </div>
-
-          <div className="px-6 py-5">
-            <div className="mb-4">
-              <h2 className="text-[14px] font-bold text-accent tracking-tight">
-                Sign in to your account
-              </h2>
-            </div>
-
-            <div className="flex gap-2.5 bg-red-50/80 border border-red-100 rounded-xl p-2.5 mb-4">
-              <ShieldAlert
-                size={14}
-                className="text-red-500 flex-shrink-0 mt-0.5"
-              />
-              <p className="text-red-700/90 text-[11px] leading-snug font-medium">
-                For <strong>Corizo employees only</strong>.
-                {userIp ? (
-                  <>
-                    {" "}
-                    IP <strong>{userIp}</strong> and activity are logged.
-                  </>
-                ) : (
-                  <> Activity is monitored and logged.</>
-                )}
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-[13px] font-semibold text-gray-700 mb-1"
-                >
-                  Email address
-                </label>
-                <div className="relative">
-                  <Mail
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-                  <input
-                    id="email"
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange("email")}
-                    placeholder="you@corizo.in"
-                    autoComplete="email"
-                    autoFocus
-                    className={[
-                      "input-field pl-10",
-                      errors.email
-                        ? "border-red-400 focus:ring-red-200 focus:border-red-400"
-                        : "",
-                    ].join(" ")}
-                  />
-                </div>
-                {errors.email && <FieldError>{errors.email}</FieldError>}
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label
-                    htmlFor="password"
-                    className="block text-[13px] font-semibold text-gray-700"
-                  >
-                    Password
-                  </label>
-                </div>
-                <div className="relative">
-                  <Lock
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={form.password}
-                    onChange={handleChange("password")}
-                    placeholder="••••••••••"
-                    autoComplete="current-password"
-                    className={[
-                      "input-field pl-10 pr-11",
-                      errors.password
-                        ? "border-red-400 focus:ring-red-200 focus:border-red-400"
-                        : "",
-                    ].join(" ")}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((s) => !s)}
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                  >
-                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                  </button>
-                </div>
-                {errors.password && <FieldError>{errors.password}</FieldError>}
-              </div>
-
-              <label className="flex items-center gap-2.5 cursor-pointer select-none group">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 accent-primary cursor-pointer"
-                />
-                <span className="text-[13px] text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Remember me for 7 days
-                </span>
-              </label>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="btn-primary w-full flex items-center justify-center gap-2 py-2.5 text-sm"
-              >
-                {submitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Authenticating&hellip;
-                  </>
-                ) : (
-                  <>
-                    <Lock size={14} />
-                    Sign in securely
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-
-          <div className="px-6 py-2.5 bg-brand-light-bg/60 border-t border-gray-100 text-center">
-            <p className="text-[10px] text-gray-400 font-medium">
-              &copy; {new Date().getFullYear()} Corizo · Internal use only
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const FieldError = ({ children }: { children: React.ReactNode }) => (
-  <p className="flex items-center gap-1 text-red-500 text-xs mt-1.5 font-medium">
-    <AlertTriangle size={11} />
-    {children}
-  </p>
-);
-
-export default LoginPage;
+import { Eye, EyeOff, Link2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login, isAuthenticated, isLoading } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
+  const [mfa, setMfa] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { if (isAuthenticated && !isLoading) navigate('/dashboard', { replace: true }); }, [isAuthenticated, isLoading, navigate]);
+  async function submit(event: React.FormEvent) {
+    event.preventDefault(); setBusy(true);
+    try {
+      const result = await login({ email: email.trim(), password, rememberMe, code: mfa ? code.trim() : undefined });
+      if (result === 'mfa') setMfa(true);
+      if (result === true) navigate('/dashboard', { replace: true });
+    } finally { setBusy(false); }
+  }
+  return <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4 py-10">
+    <div className="w-full max-w-[960px] bg-white rounded-3xl border border-slate-200 shadow-soft grid md:grid-cols-2 overflow-hidden">
+      <section className="p-8 sm:p-12 bg-blue-50/60 flex flex-col justify-between gap-10 border-b md:border-b-0 md:border-r border-slate-100">
+        <div className="flex items-center gap-3"><div className="w-11 h-11 bg-primary text-white rounded-xl flex items-center justify-center"><Link2 size={24}/></div><span className="text-xl font-semibold tracking-tight">Corizo Links</span></div>
+        <div><p className="text-xs uppercase tracking-widest font-semibold text-blue-700 mb-4">Your team workspace</p><h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">Everything you need.<br/>One place to find it.</h1><p className="mt-5 text-slate-500 text-sm leading-7">Find shared documents, spreadsheets, forms and Figma designs. Keep your team connected and your work moving.</p><div className="flex flex-wrap gap-2 mt-6">{['Google Workspace', 'Microsoft 365', 'Figma'].map(name => <span key={name} className="rounded-lg bg-white border border-slate-200 px-3 py-2 text-xs text-slate-600">{name}</span>)}</div></div>
+        <p className="flex items-center gap-2 text-xs text-slate-500"><ShieldCheck size={16}/>For authorized Corizo employees</p>
+      </section>
+      <section className="p-8 sm:p-12 flex flex-col justify-center">
+        <h2 className="text-2xl font-semibold tracking-tight">{mfa ? 'Verify it’s you' : 'Welcome back'}</h2><p className="text-sm text-slate-500 mt-2 mb-8">{mfa ? 'Enter your authenticator or recovery code.' : 'Sign in with your work account to continue.'}</p>
+        {isLoading ? <p role="status" className="text-sm text-slate-500">Checking your session…</p> : <form onSubmit={submit} className="space-y-5">
+          {!mfa ? <><label className="block text-sm font-medium" htmlFor="email">Work email<input id="email" type="email" autoComplete="username" className="input-field mt-2" placeholder="you@corizo.in" value={email} onChange={e => setEmail(e.target.value)} required maxLength={254}/></label>
+          <div><label className="block text-sm font-medium mb-2" htmlFor="password">Password</label><div className="relative"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" className="input-field pr-12" value={password} onChange={e => setPassword(e.target.value)} required maxLength={128}/><button type="button" className="absolute right-3 inset-y-0 text-slate-400" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}</button></div></div>
+          <label className="flex gap-2 items-center text-sm text-slate-500"><input type="checkbox" className="accent-primary w-4 h-4" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}/>Remember me for 7 days</label></>
+          : <><p className="text-sm text-slate-500 truncate">{email}</p><label className="block text-sm font-medium" htmlFor="otp">Verification code<input id="otp" className="input-field mt-2 text-lg tracking-widest" autoComplete="one-time-code" value={code} onChange={e => setCode(e.target.value)} required maxLength={16} autoFocus/></label><p className="text-xs text-slate-500 leading-5">Open your authenticator app for a six-digit code, or use one of your saved recovery codes.</p><button type="button" className="text-sm text-primary" onClick={() => { setMfa(false); setCode(''); }}>Use a different account</button></>}
+          <button className="btn-primary w-full flex items-center justify-center gap-2" disabled={busy}>{busy ? 'Signing in…' : mfa ? 'Verify and sign in' : 'Sign in'}<ArrowRight size={17}/></button>
+          <p className="text-xs text-slate-400 leading-5">Access and activity are logged for account security. Contact your administrator if you need help signing in.</p>
+        </form>}
+      </section>
+    </div><p className="mt-6 text-xs text-slate-400">© {new Date().getFullYear()} Corizo · Internal workspace</p>
+  </div>;
+}

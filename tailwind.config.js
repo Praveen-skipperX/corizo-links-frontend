@@ -5,22 +5,22 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#8860B7',
-          dark: '#6E24A5',
-          light: '#F2F2FE',
+          DEFAULT: '#1a73e8',
+          dark: '#1557b0',
+          light: '#e8f0fe',
         },
-        accent: '#1E153D',
+        accent: '#202124',
         brand: {
-          purple: '#8860B7',
-          'dark-purple': '#6E24A5',
-          'light-bg': '#F5F4FA',
-          'dark-text': '#1E153D',
-          sidebar: '#16102E',
+          purple: '#1a73e8',
+          'dark-purple': '#1557b0',
+          'light-bg': '#f8fafc',
+          'dark-text': '#202124',
+          sidebar: '#f8fafc',
           'sidebar-hover': '#221A42',
         },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"Segoe UI"', 'Arial', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         card: '0 1px 2px 0 rgba(30,21,61,0.04), 0 4px 16px 0 rgba(30,21,61,0.04)',

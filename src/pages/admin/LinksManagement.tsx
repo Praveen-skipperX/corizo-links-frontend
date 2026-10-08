@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import api from '../../lib/api';
 import { Link, LinkStatus, LinkType, LINK_TYPES } from '../../types';
 import { formatDate, truncate } from '../../lib/utils';
-import { getLinkIcon, getLinkTypeColor } from '../../lib/linkIcons';
+import { getLinkIcon, getLinkTypeColor, resolveLinkType, safeLinkUrl } from '../../lib/linkIcons';
 
 const URL_REGEX = /^https?:\/\/.+/i;
 
@@ -44,7 +44,7 @@ const LinksManagement = () => {
   const fetchLinks = async () => {
     try {
       const { data } = await api.get('/links');
-      if (data.success) setLinks(data.data.links as Link[]);
+      if (data.success) setLinks((data.data.links as Link[]).map(link => ({ ...link, type: resolveLinkType(link) })));
     } catch {
       toast.error('Failed to load links.');
     } finally {
@@ -227,7 +227,7 @@ const LinksManagement = () => {
                         <div>
                           <p className="font-medium text-accent leading-tight">{link.title}</p>
                           <a
-                            href={link.url}
+                            href={safeLinkUrl(link.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs text-primary hover:underline flex items-center gap-1 mt-0.5"
@@ -353,6 +353,7 @@ const LinksManagement = () => {
               />
             </div>
 
+<datalist id="link-categories">{["General", "Figma", "Internship", "Leads", "Workshop", "Templates", "HR", "Finance"].map(category => <option key={category} value={category} />)}</datalist>
             {/* Category + Status */}
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -362,7 +363,8 @@ const LinksManagement = () => {
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className="input-field"
-                  placeholder="e.g. Internship"
+                  list="link-categories"
+                  placeholder="e.g. Figma, Internship"
                 />
               </div>
               <div>

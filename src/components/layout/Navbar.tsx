@@ -8,6 +8,7 @@ interface NavbarProps {
 }
 
 const pageTitles: Record<string, { title: string; sub: string }> = {
+  "/security": { title: "Security settings", sub: "Password and 2-step verification" },
   "/dashboard": {
     title: "Dashboard",
     sub: "Browse and open shared resource links",
