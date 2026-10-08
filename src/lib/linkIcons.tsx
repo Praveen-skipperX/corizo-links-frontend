@@ -25,7 +25,7 @@ export const getLinkIcon = (
     case "Microsoft Word":
       return <FileText size={size} />;
     case "Figma":
-      return <svg width={size} height={size} viewBox="0 0 30 45" role="img" aria-label="Figma"><path fill="currentColor" d="M7.5 0h7.5v15H7.5a7.5 7.5 0 010-15"/><path fill="currentColor" opacity=".7" d="M15 0h7.5a7.5 7.5 0 010 15H15z"/><path fill="currentColor" opacity=".85" d="M7.5 15H15v15H7.5a7.5 7.5 0 010-15"/><circle fill="currentColor" opacity=".6" cx="22.5" cy="22.5" r="7.5"/><path fill="currentColor" d="M7.5 30H15v7.5A7.5 7.5 0 117.5 30"/></svg>;
+      return <svg width={size} height={size} viewBox="0 0 30 45" role="img" aria-label="Figma"><path fill="#f24e1e" d="M7.5 0h7.5v15H7.5a7.5 7.5 0 010-15"/><path fill="#ff7262" d="M15 0h7.5a7.5 7.5 0 010 15H15z"/><path fill="#a259ff" d="M7.5 15H15v15H7.5a7.5 7.5 0 010-15"/><circle fill="#1abcfe" cx="22.5" cy="22.5" r="7.5"/><path fill="#0acf83" d="M7.5 30H15v7.5A7.5 7.5 0 117.5 30"/></svg>;
     default:
       return <Link2 size={size} />;
   }

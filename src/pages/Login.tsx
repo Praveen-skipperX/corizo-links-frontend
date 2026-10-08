@@ -1,10 +1,11 @@
-import { Eye, EyeOff, Link2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, ArrowRight } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
+import Brand from '../components/Brand';
 
 
 
@@ -62,7 +63,7 @@ export default function LoginPage() {
 
       <section className="login-story p-8 sm:p-12 flex flex-col justify-between gap-10 border-b md:border-b-0 md:border-r border-slate-100">
 
-        <div className="flex items-center gap-3"><div className="w-11 h-11 bg-primary text-white rounded-xl flex items-center justify-center"><Link2 size={24}/></div><span className="text-xl font-semibold tracking-tight">Corizo Links</span></div>
+        <Brand />
 
         <div><p className="text-xs uppercase tracking-widest font-semibold text-blue-700 mb-4">Your team workspace</p><h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">Everything you need.<br/>One place to find it.</h1><p className="mt-5 text-slate-500 text-sm leading-7">Find shared documents, spreadsheets, forms and Figma designs. Keep your team connected and your work moving.</p><div className="flex flex-wrap gap-2 mt-6">{['Google Workspace', 'Microsoft 365', 'Figma'].map(name => <span key={name} className="rounded-lg bg-white border border-slate-200 px-3 py-2 text-xs text-slate-600">{name}</span>)}</div></div>
 
