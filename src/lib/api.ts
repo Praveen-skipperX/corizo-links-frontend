@@ -4,10 +4,15 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
   withCredentials: true,
   timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'CorizoLinks',
-  },
+});
+
+// Only mutations need the CSRF header. Keep read-only session checks simple
+// so they do not require a custom-header CORS preflight.
+api.interceptors.request.use((config) => {
+  if (!['get', 'head', 'options'].includes((config.method || 'get').toLowerCase())) {
+    config.headers.set('X-Requested-With', 'CorizoLinks');
+  }
+  return config;
 });
 
 // Response interceptor for global error handling
