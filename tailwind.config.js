@@ -20,7 +20,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Segoe UI"', 'Arial', 'system-ui', 'sans-serif'],
+        sans: ['"Inter Variable"', '"Segoe UI"', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         card: '0 1px 2px 0 rgba(30,21,61,0.04), 0 4px 16px 0 rgba(30,21,61,0.04)',

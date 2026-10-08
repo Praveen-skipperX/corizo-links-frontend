@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter/wght.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
@@ -16,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           color: '#fff',
           borderRadius: '8px',
           fontSize: '14px',
-          fontFamily: 'Inter, sans-serif',
+          fontFamily: '"Inter Variable", system-ui, sans-serif',
         },
         success: {
           iconTheme: { primary: '#8860B7', secondary: '#fff' },

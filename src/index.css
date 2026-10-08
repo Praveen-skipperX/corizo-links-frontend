@@ -2,19 +2,102 @@
 @config "../tailwind.config.js";
 @source "./";
 
+/* Abstract artwork stays outside the form and never intercepts input. */
+.login-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 12% 12%, #edf4ff, transparent 52%),
+    radial-gradient(ellipse at 95% 90%, #e8f6f5, transparent 48%), #f7f9fc;
+}
+.login-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.login-orbit { position: absolute; border-radius: 50%; }
+.login-orbit-blue {
+  width: 630px;
+  height: 630px;
+  top: -310px;
+  right: -190px;
+  border: 100px solid #dbe9fd;
+  box-shadow: inset 0 0 70px #e9f1ff, 0 0 0 24px #eef4fc;
+  transform: rotate(-25deg) scaleX(1.2);
+}
+.login-orbit-teal {
+  width: 520px;
+  height: 520px;
+  bottom: -300px;
+  left: -180px;
+  border: 85px solid #d9eeeb;
+  box-shadow: 0 0 0 20px #edf7f4;
+  transform: rotate(30deg) scaleX(1.3);
+}
+.login-orbit-indigo {
+  width: 140px;
+  height: 140px;
+  left: 7%;
+  top: 16%;
+  background: linear-gradient(145deg, #dde5ff, #eef2ff 70%);
+  box-shadow: inset -8px -8px 24px #c9d6f044;
+}
+.login-dots {
+  position: absolute;
+  width: 180px;
+  height: 120px;
+  right: 6%;
+  bottom: 14%;
+  opacity: .35;
+  background: radial-gradient(circle, #7b98c6 1px, transparent 1.5px) 0 0 / 16px 16px;
+}
+.login-ribbon { position: absolute; inset: 0; width: 100%; height: 100%; }
+.login-panel { box-shadow: 0 20px 70px #3157830d, 0 2px 8px #1e293b05; }
+.login-story {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(150deg, #f0f6ff, #f7faff 65%, #edf5ff);
+}
+.login-story::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 320px;
+  height: 320px;
+  top: -200px;
+  right: -145px;
+  border: 45px solid #dceaff;
+  border-radius: 50%;
+  opacity: .65;
+  pointer-events: none;
+}
+@media (max-width: 767px) {
+  .login-orbit-blue { right: -350px; }
+  .login-orbit-indigo { left: -80px; top: 40%; }
+  .login-dots { display: none; }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
   }
 
   html {
-    font-family: 'Segoe UI', Arial, system-ui, sans-serif;
+    font-family: 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+    font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  h1, h2, h3 { letter-spacing: -0.025em; }
+
+  button, input, select, textarea { font: inherit; }
+
   body {
     @apply bg-brand-light-bg text-brand-dark-text;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
   }
@@ -29,12 +112,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(136, 96, 183, 0.35);
+    background: rgba(100, 116, 139, 0.35);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #8860B7;
+    background: #64748b;
   }
 }
 

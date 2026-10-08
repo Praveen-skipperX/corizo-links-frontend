@@ -16,6 +16,7 @@ import { truncate } from "../lib/utils";
 import { Link } from "../types";
 
 const CATEGORY_COLORS: Record<string, string> = {
+  Figma: "bg-indigo-50 text-indigo-700",
   General: "bg-slate-100 text-slate-700",
   Internship: "bg-sky-100 text-sky-700",
   Leads: "bg-emerald-100 text-emerald-700",
